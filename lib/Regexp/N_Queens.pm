@@ -12,7 +12,7 @@ use Hash::Util::FieldHash qw [fieldhash];
 
 use lib qw [lib];
 
-our $VERSION = '2023021601';
+our $VERSION = '2023021701';
 
 fieldhash my %size;
 fieldhash my %pattern;
