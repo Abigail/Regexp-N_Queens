@@ -20,10 +20,12 @@ fieldhash my %subject;
 
 my $queen  = "Q";
 my $prefix = "Q";
+my $sep    = ";";
 
 my sub init_size;
 my sub init_subject_and_pattern;
 my sub name;
+my sub all_groups;
 my sub attacks;
 
 
@@ -171,6 +173,26 @@ sub name ($square) {
 
 ################################################################################
 #
+# my sub all_groups (@squares)
+#
+# Give a list of squares, return a sub pattern, where we refer back to
+# each capture group of said square. The sub pattern is terminated with
+# a semi-colon.
+#
+# IN:  @squares: List of squares, where each square is represented by a
+#                two element array, with an x and a y coordinate.
+#
+# OUT: A string with back references (\g{name}), terminated by a semi colon.
+#
+################################################################################
+
+sub all_groups (@squares) {
+    (join "" => map {my $name = name $_; "\\g{$name}"} @squares) . $sep
+}
+
+
+################################################################################
+#
 # my sub attacks ($sq1, $sq2)
 #
 # Returns true iff the two squares are a Queens move away from each other.
@@ -232,8 +254,8 @@ sub init_subject_and_pattern ($self) {
             # there is no Queen on the square.
             #
             my $this_group = name $this_square;
-            $subject .= "$queen;";
-            $pattern .= "(?<$this_group>$queen?)$queen?;";
+            $subject      .= "$queen$sep";
+            $pattern      .= "(?<$this_group>$queen?)$queen?$sep";
 
             #
             # Now we compare this cell with each of the previous squares.
@@ -244,8 +266,8 @@ sub init_subject_and_pattern ($self) {
             foreach my $previous_square (@previous_squares) {
                 next unless attacks $this_square, $previous_square;
                 my $prev_group = name $previous_square;
-                $subject .= "$queen;";
-                $pattern .= "\\g{$prev_group}\\g{$this_group}$queen?;";
+                $subject      .= "$queen$sep";
+                $pattern      .= "\\g{$prev_group}\\g{$this_group}$queen?$sep";
             }
             push @previous_squares => $this_square;
             push @this_row         => $this_square;
@@ -256,10 +278,8 @@ sub init_subject_and_pattern ($self) {
         # more than one Queen, but it could have left us with 
         # no Queens at all. So, we add a constraint.
         #
-        $subject .= "$queen;";
-        $pattern .= join "" => map {my $group = name $_; "\\g{$group}"}
-                                   @this_row;
-        $pattern .= ";";
+        $subject .= "$queen$sep";
+        $pattern .= all_groups @this_row;
         @this_row = ();
     }
 
