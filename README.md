@@ -3,23 +3,26 @@
 `Regexp::N_Queens` - Solve the `N`-Queens problem by using a regular expression.
 
 # SYNOPSIS
-  use Regexp::N_Queens;
 
-  my $N       = 8;
-  my $solver  = Regexp::N_Queens:: -> new -> init (size => $N);
-  my $subject = $solver -> subject;
-  my $pattern = $solver -> pattern;
-  if ($subject =~ $pattern) {
-      foreach my $x (1 .. $N) {
-          foreach my $y (1 .. $N) {
-              print $+ {"Q_${x}_${y}"} ? "Q" : ".";
-          }
-          print "\n";
-      }
-  }
-  else {
-      say "No solution for an $N x $N board"
-  }
+~~~~
+use Regexp::N_Queens;
+
+my $N       = 8;
+my $solver  = Regexp::N_Queens:: -> new -> init (size => $N);
+my $subject = $solver -> subject;
+my $pattern = $solver -> pattern;
+if ($subject =~ $pattern) {
+    foreach my $x (1 .. $N) {
+        foreach my $y (1 .. $N) {
+            print $+ {"Q_${x}_${y}"} ? "Q" : ".";
+        }
+        print "\n";
+    }
+}
+else {
+    say "No solution for an $N x $N board"
+}
+~~~~
 
 # DESCRIPTION
 
@@ -97,8 +100,9 @@ DEALINGS IN THE SOFTWARE.
 To install this module, run, after unpacking the tar-ball, the following
 commands:
 
-  perl Makefile.PL
-  make
-  make test
-  make install
-
+~~~~
+perl Makefile.PL
+make
+make test
+make install
+~~~~
