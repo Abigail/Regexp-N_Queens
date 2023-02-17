@@ -21,11 +21,46 @@ fieldhash my %subject;
 my $queen  = "Q";
 my $prefix = "Q";
 
+################################################################################
+#
+# sub new ($class)
+#
+# Create a new, uninitialized object.
+#
+# IN:  $class: Package name
+#
+# OUT: Blessed object, uninitialized object
+#
+################################################################################
+
 sub new ($class) {bless \do {my $v => $class}}
+
+
+################################################################################
+#
+# sub init ($self, @args)
+#
+# Initialize the object.
+#
+# IN:  $self: Uninitialized object.
+#      @args: Set of named parameters used to initialized the object.
+#             We accept the following options:
+#             - size => N: The size of the chess board (number of rows/columns)
+#                          If no size parameter is given, the board will
+#                          be assumed to have size 8, like a standard
+#                          chess board.
+#
+#             As a special feature, the set of named parameter may also
+#             be passed in as a hashref.
+#
+# OUT: Initialized object.
+#
+################################################################################
+
 sub init ($self, @args) {
     my $args = @args == 1 && ref $args [0] eq "HASH" ? $args [0] : {@args};
 
-    $self -> init_size ($args);
+    $self -> __init_size ($args);
 
     if (keys %$args) {
         die "Unknown parameter(s) to init: " . join (", " => keys %$args)
@@ -35,43 +70,140 @@ sub init ($self, @args) {
     $self;
 }
 
-sub init_size ($self, $args) {
+
+################################################################################
+#
+# sub __init_size ($self, $args)
+#
+# Initialize the size of the board. This method is called from init (),
+# and should not be called outside of init ().
+#
+# IN:  $self:  Current object
+#      $args:  Hashref with parameters. Used (and then deleted) parameters:
+#              - size => N: The size of the chess board (number of rows/columns)
+#
+# OUT: Current object
+#
+################################################################################
+
+sub __init_size ($self, $args) {
     $size {$self} = delete $$args {size} || 8;
     $self;
 }
+
+
+################################################################################
+#
+# sub size ($self)
+#
+# Return the size of the board.
+#
+# IN:  $self:  Current object
+#
+# OUT: Size of the board.
+#
+################################################################################
+
 sub size ($self) {
     $size {$self}
 }
 
 
+################################################################################
+#
+# sub subject ($self)
+#
+# Return the subject to be matched against.
+#
+# IN:  $self:  Current object
+#
+# OUT: Subject
+#
+################################################################################
+
 sub subject ($self) {
-    $self -> init_subject_and_pattern;
+    $self -> __init_subject_and_pattern;
     $subject {$self};
 }
+
+
+################################################################################
+#
+# sub pattern ($self)
+#
+# Return the pattern to match against the subject.
+#
+# IN:  $self:  Current object
+#
+# OUT: Pattern
+#
+################################################################################
+
 sub pattern ($self) {
-    $self -> init_subject_and_pattern;
+    $self -> __init_subject_and_pattern;
     $pattern {$self};
 }
+
+################################################################################
+#
+# my sub name ($square)
+#
+# Return the name of the capture which captures the state of a square.
+# This is a lexical sub, and not callable from the outside.
+#
+# IN:  $square: The square for which we want the name. A square is represented
+#               as an 2-element array(ref), with an x and a y coordinate.
+#
+# OUT: Name of the capture.
+#
+################################################################################
 
 my sub name ($square) {
     join "_" => $prefix, @$square
 }
-my sub coordinates ($name)  {
-    if ($name =~ /^${prefix}_([0-9]+)_([0-9]+)/) {
-        return [$1, $2];
-    }
-    return;
-}
-my $X = 0;
-my $Y = 1;
+
+
+################################################################################
+#
+# my sub attacks ($sq1, $sq2)
+#
+# Returns true iff the two squares are a Queens move away from each other.
+# That is, if both squares would contain a Queen, they will attack each other.
+# This is a lexical sub, and not callable from the outside.
+#
+# IN:  $sq1, $sq2: The two squares of which we want to know whether they
+#                  are in attacking range. Both squares are represented
+#                  as 2-element arrays, with an x and a y coordinate.
+#
+# OUT: True if the squares are in attacking range, false otherwise.
+#
+################################################################################
+
 my sub attacks ($sq1, $sq2) {
-                 $$sq1 [$X] == $$sq2 [$X]              || # Same column
+    state $X = 0;
+    state $Y = 1;
+    return       $$sq1 [$X] == $$sq2 [$X]              || # Same column
                  $$sq1 [$Y] == $$sq2 [$Y]              || # Same row
     $$sq1 [$X] - $$sq2 [$X] == $$sq1 [$Y] - $$sq2 [$Y] || # Same diagonal
     $$sq1 [$X] - $$sq2 [$X] == $$sq2 [$Y] - $$sq1 [$Y]    # Same anti-diagonal
 }
 
-sub init_subject_and_pattern ($self) {
+
+################################################################################
+#
+# sub __init_subject_and_pattern ($self)
+#
+# Calculate the subject and pattern. This method is called when the object
+# is queried for either the subject or pattern. Once called, a second call
+# will immediately return.
+#
+# IN:  $self: Current object.
+#
+# OUT: Current object.
+#
+################################################################################
+
+sub __init_subject_and_pattern ($self) {
     return if $subject {$self} && $pattern {$self};
 
     my $subject = "";
