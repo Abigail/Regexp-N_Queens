@@ -37,7 +37,7 @@ unless ($main_version) {
 
 pass "Got a VERSION declaration in main file";
 
-foreach my $file (@files, "README") {
+foreach my $file (@files, "README.md") {
     my $base = $file;
        $base =~ s!^.*/!!;
     #
@@ -51,8 +51,9 @@ foreach my $file (@files, "README") {
 
     pass "Found version $version in $base";
 
-    if ($file eq 'README') {
-        is $version, $main_version, "Version in README matches package version"
+    if ($file eq 'README.md') {
+        is $version, $main_version,
+           "Version in README.md matches package version"
     }
     else {
         ok $version le $main_version,
@@ -92,7 +93,7 @@ sub version {
     open my $fh, "<", $file or return;
     while (<$fh>) {
         return $1 if /^our \$VERSION = '([0-9]{10})';$/;
-        return $1 if /This is version ([0-9]{10}) /;      # README
+        return $1 if /This is version ([0-9]{10}) /;      # README.md
         return    if /     \$VERSION \s* =/x;
     }
     return;

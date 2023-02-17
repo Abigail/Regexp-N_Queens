@@ -9,4 +9,4 @@ t/981_permissions.t
 t/982_git.t
 t/990_ascii.t
 Changes
-README
+README.md
