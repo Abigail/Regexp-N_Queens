@@ -66,7 +66,7 @@ a solution.
 # DEVELOPMENT
 
 The current sources of this module are found on
-[github](git://github.com/Abigail/Regexp-N_Queens).
+[github](https://github.com/Abigail/Regexp-N_Queens).
 
 # AUTHOR
 
