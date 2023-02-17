@@ -83,6 +83,7 @@ sub init_subject_and_pattern ($self) {
     #
     my @previous_squares;
     foreach my $x (1 .. $size) {
+        my @this_row;
         foreach my $y (1 .. $size) {
             my $this_square = [$x, $y];
             #
@@ -108,16 +109,20 @@ sub init_subject_and_pattern ($self) {
                 $pattern .= "\\g{$prev_group}\\g{$this_group}$queen?;";
             }
             push @previous_squares => $this_square;
+            push @this_row         => $this_square;
         }
+        #
+        # We know there has to be exactly one Queen on each row.
+        # Previous constraints already made sure we cannot have
+        # more than one Queen, but it could have left us with 
+        # no Queens at all. So, we add a constraint.
+        #
+        $subject .= "$queen;";
+        $pattern .= join "" => map {my $group = name $_; "\\g{$group}"}
+                                   @this_row;
+        $pattern .= ";";
+        @this_row = ();
     }
-
-    #
-    # Final condition: we placed the exact amount of Queens.
-    #
-    $subject .= ($queen x $size) . ";";
-    $pattern .= join "" => map {my $group = name $_; "\\g{$group}"}
-                           @previous_squares;
-    $pattern .= ";";
 
     $subject {$self} =       $subject;
     $pattern {$self} = '^' . $pattern . '$';
