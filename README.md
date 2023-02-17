@@ -55,12 +55,11 @@ a solution.
 # TODO
 * Perhaps sometime, write some tests.
 * This isn't fast for larger `N`. On the machine this module was written
-  on, it does sizes up to 13 in less than 1 second, sizes 14 and 15 in
-  24 and 29 seconds, and size 16 I killed after it didn't find a
-  solution within 5 minutes, while the machine itself was trying to
-  mimic the sound of a Concorde.
+  on, it does sizes up to 17, and size 19 in less than 1 second, size 18
+  in about 3 seconds, size 20 in about 20 seconds, size 21 in just over
+  1 second, but it get pretty bad for size 22 and above.
 
-  Some optimizations are possible.
+  Some optimizations may be possible.
 
 # SEE ALSO
 

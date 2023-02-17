@@ -196,12 +196,11 @@ C<< N >>-Queens problem is also a solution.
 =item * Perhaps sometime, write some tests.
 
 =item * This isn't fast for larger C<< N >>. On the machine this module
-was written on, it does sizes up to C<< 13 >> in less than 1 second,
-sizes C<< 14 >> and C<< 15 >> in C<< 24 >> and C<< 29 >> seconds, and
-size C<< 16 >> I killed after it didn't find a solution within C<< 5 >>
-minutes, while the machine itself was trying to mimic the sound of a Concorde.
+was written on, it does sizes up to C<< 17 >>, and size C<< 19 >> in less
+than 1 second, size C<< 18 >> in 3 seconds, size C<< 20 >> in 20 seconds,
+size C<< 21 >> in 1 second, and it gets pretty bad for larger sizes.
 
-Some optimizations are possible.
+Some optimizations may be possible.
 
 =back
 
