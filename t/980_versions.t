@@ -93,7 +93,7 @@ sub version {
     open my $fh, "<", $file or return;
     while (<$fh>) {
         return $1 if /^our \$VERSION = '([0-9]{10})';$/;
-        return $1 if /This is version ([0-9]{10}) /;      # README.md
+        return $1 if /This is version `?([0-9]{10})`?/;      # README.md
         return    if /     \$VERSION \s* =/x;
     }
     return;

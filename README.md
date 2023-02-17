@@ -2,6 +2,10 @@
 
 `Regexp::N_Queens` - Solve the `N`-Queens problem by using a regular expression.
 
+# VERSION
+
+This is version `2023021701` of `Regexp::N_Queens`.
+
 # SYNOPSIS
 
 ~~~~
