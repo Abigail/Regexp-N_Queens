@@ -21,6 +21,12 @@ fieldhash my %subject;
 my $queen  = "Q";
 my $prefix = "Q";
 
+my sub init_size;
+my sub init_subject_and_pattern;
+my sub name;
+my sub attacks;
+
+
 ################################################################################
 #
 # sub new ($class)
@@ -60,7 +66,7 @@ sub new ($class) {bless \do {my $v => $class}}
 sub init ($self, @args) {
     my $args = @args == 1 && ref $args [0] eq "HASH" ? $args [0] : {@args};
 
-    $self -> __init_size ($args);
+    init_size ($self, $args);
 
     if (keys %$args) {
         die "Unknown parameter(s) to init: " . join (", " => keys %$args)
@@ -73,10 +79,10 @@ sub init ($self, @args) {
 
 ################################################################################
 #
-# sub __init_size ($self, $args)
+# my sub init_size ($self, $args)
 #
-# Initialize the size of the board. This method is called from init (),
-# and should not be called outside of init ().
+# Initialize the size of the board. This subroutine is called from init ().
+# This is subroutine is lexical, and cannot be called from the outside.
 #
 # IN:  $self:  Current object
 #      $args:  Hashref with parameters. Used (and then deleted) parameters:
@@ -86,7 +92,7 @@ sub init ($self, @args) {
 #
 ################################################################################
 
-sub __init_size ($self, $args) {
+sub init_size ($self, $args) {
     $size {$self} = delete $$args {size} || 8;
     $self;
 }
@@ -122,7 +128,7 @@ sub size ($self) {
 ################################################################################
 
 sub subject ($self) {
-    $self -> __init_subject_and_pattern;
+    init_subject_and_pattern ($self);
     $subject {$self};
 }
 
@@ -140,7 +146,7 @@ sub subject ($self) {
 ################################################################################
 
 sub pattern ($self) {
-    $self -> __init_subject_and_pattern;
+    init_subject_and_pattern ($self);
     $pattern {$self};
 }
 
@@ -158,7 +164,7 @@ sub pattern ($self) {
 #
 ################################################################################
 
-my sub name ($square) {
+sub name ($square) {
     join "_" => $prefix, @$square
 }
 
@@ -179,7 +185,7 @@ my sub name ($square) {
 #
 ################################################################################
 
-my sub attacks ($sq1, $sq2) {
+sub attacks ($sq1, $sq2) {
     state $X = 0;
     state $Y = 1;
     return       $$sq1 [$X] == $$sq2 [$X]              || # Same column
@@ -191,11 +197,12 @@ my sub attacks ($sq1, $sq2) {
 
 ################################################################################
 #
-# sub __init_subject_and_pattern ($self)
+# my sub init_subject_and_pattern ($self)
 #
 # Calculate the subject and pattern. This method is called when the object
 # is queried for either the subject or pattern. Once called, a second call
-# will immediately return.
+# will immediately return. As the subroutine is lexical, it cannot be 
+# called from the outside.
 #
 # IN:  $self: Current object.
 #
@@ -203,7 +210,7 @@ my sub attacks ($sq1, $sq2) {
 #
 ################################################################################
 
-sub __init_subject_and_pattern ($self) {
+sub init_subject_and_pattern ($self) {
     return if $subject {$self} && $pattern {$self};
 
     my $subject = "";
