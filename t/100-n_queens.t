@@ -12,7 +12,7 @@ our $r = eval "require Test::NoWarnings; 1";
 
 use Regexp::N_Queens;
 
-foreach my $size (1 .. 12) {
+foreach my $size (1 .. 16) {
     subtest "$size Queens problem" => sub {
         my $generator = Regexp::N_Queens:: -> new -> init (size => $size);
         ok $generator, "Generator object" or return;

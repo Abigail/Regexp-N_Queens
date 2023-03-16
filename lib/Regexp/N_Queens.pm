@@ -352,8 +352,6 @@ C<< N >>-Queens problem is also a solution.
 
 =over 2
 
-=item * Perhaps sometime, write some tests.
-
 =item * This isn't fast for larger C<< N >>. On the machine this module
 was written on, it does sizes up to C<< 17 >>, and size C<< 19 >> in less
 than 1 second, size C<< 18 >> in 3 seconds, size C<< 20 >> in 20 seconds,
